@@ -223,6 +223,17 @@ RegisterNUICallback( "clearBoloPlate", function( plate, cb )
 	cb( "ok" )
 end )
 
+local Vehicle = nil -- ps-mdt
+
+local function GetFrontPlate() -- ps-mdt
+	local data = {
+		locked = READER.vars.cams["front"].locked,
+		plate = READER.vars.cams["front"].plate,
+		veh = Vehicle,
+	}
+	return data
+end exports("GetFrontPlate", GetFrontPlate)
+
 
 --[[----------------------------------------------------------------------------------
 	Plate reader threads
@@ -244,6 +255,10 @@ function READER:Main()
 
 			-- Run the ray trace to get a vehicle
 			local veh = UTIL:GetVehicleInDirection( PLY.veh, start, offset )
+
+			if i == 1 then -- ps-mdt
+				Vehicle = veh
+			end
 
 			-- Get the plate reader text for front/rear
 			local cam = self:GetCamFromNum( i )
